@@ -401,12 +401,12 @@
       ]
     }
   ],
-  "generatedTrackName": "Nima Klax",
+  "trackName": "Nima Klax",
   "creator": "Lynx",
   "genre": "Latin",
   "style": "Reggaeton",
   "key": "F Minor",
-  "artists": [
+  "artistIds": [
     "KORUS"
   ],
   "usedUnlockIds": [
@@ -432,7 +432,7 @@
         "gainDb": 0,
         "durationBeats": 32,
         "bpm": 96,
-        "trackTitle": "Quiero",
+        "trackName": "Quiero",
         "trackArtist": "KORUS",
         "stemId": "cc17abf7",
         "audioUrl": "https://v16-media.soundmosaic.pixelynx-ai.com/base_reggaeton_clips1_2023-24-8_21454/cc17abf7.mp3",

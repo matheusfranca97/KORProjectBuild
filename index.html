@@ -1,54 +1,60 @@
 <!DOCTYPE html>
 <html lang="en-us">
-  <head>
+<head>
     <meta charset="utf-8">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <title>Unity WebGL Player | MusicProject</title>
-  </head>
-  <body style="text-align: center; padding: 0; border: 0; margin: 0;">
-    <canvas id="unity-canvas" width="428" height="926" tabindex="-1" style="width: 428px; height: 926px; background: #231F20"></canvas>
+</head>
+<body style="text-align: center; padding: 0; border: 0; margin: 0;">
+    <canvas id="unity-canvas" width=428 height=926 tabindex="-1" style="width: 428px; height: 926px; background: #231F20"></canvas>
     <script src="Build/Build.loader.js"></script>
     <script>
-      if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
-        var meta = document.createElement('meta');
-        meta.name = 'viewport';
-        meta.content = 'width=device-width, height=device-height, initial-scale=1.0, user-scalable=no, shrink-to-fit=yes';
-        document.getElementsByTagName('head')[0].appendChild(meta);
+        if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
+            // Mobile device style: fill the whole browser client area with the game canvas:
+            var meta = document.createElement('meta');
+            meta.name = 'viewport';
+            meta.content = 'width=device-width, height=device-height, initial-scale=1.0, user-scalable=no, shrink-to-fit=yes';
+            document.getElementsByTagName('head')[0].appendChild(meta);
 
-        var canvas = document.querySelector("#unity-canvas");
-        canvas.style.width = "100%";
-        canvas.style.height = "100%";
-        canvas.style.position = "fixed";
+            var canvas = document.querySelector("#unity-canvas");
+            canvas.style.width = "100%";
+            canvas.style.height = "100%";
+            canvas.style.position = "fixed";
 
-        document.body.style.textAlign = "left";
-      }
+            document.body.style.textAlign = "left";
+        }
 
-      // Inicializando Unity
-      createUnityInstance(document.querySelector("#unity-canvas"), {
-        dataUrl: "Build/Build.data",
-        frameworkUrl: "Build/Build.framework.js",
-        codeUrl: "Build/Build.wasm",
-        streamingAssetsUrl: "StreamingAssets",
-        companyName: "DefaultCompany",
-        productName: "MusicProject",
-        productVersion: "1.0",
-      }).then((unityInstance) => {
-        
-        // Carregar o arquivo JSON localizado na mesma pasta do HTML
-        fetch('9726142b.json')  // Use o nome do arquivo diretamente
-          .then(response => response.json())
-          .then(data => {
-            const jsonString = JSON.stringify(data);
-            unityInstance.SendMessage('BackendCommunicationManager', 'ReceivePlayerData', jsonString);
-          })
-          .catch(error => {
-            console.error("Failed to load the JSON file:", error);
-          });
+        // Defina unityInstance fora da função then para que seja acessível globalmente
+        let unityInstance;
 
-      }).catch((message) => {
-        console.error(message);
-      });
+        // Função para carregar o JSON e enviar para o Unity
+        function loadAndSendJson() {
+            fetch('9726142b.json')
+                .then(response => response.json())
+                .then(data => {
+                    const jsonString = JSON.stringify(data);
+                    unityInstance.SendMessage('BackendCommunicationManager', 'ReceivePlayerData', jsonString);
+                })
+                .catch(error => {
+                    console.error("Failed to load the JSON file:", error);
+                });
+        }
 
+        // Chama a função quando o Unity estiver pronto
+        createUnityInstance(document.querySelector("#unity-canvas"), {
+            dataUrl: "Build/Build.data",
+            frameworkUrl: "Build/Build.framework.js",
+            codeUrl: "Build/Build.wasm",
+            streamingAssetsUrl: "StreamingAssets",
+            companyName: "DefaultCompany",
+            productName: "MusicProject",
+            productVersion: "1.0",
+        }).then((instance) => {
+            // Armazene a instância do Unity para uso posterior
+            unityInstance = instance;
+            // Quando o Unity estiver carregado, chama a função para enviar o JSON
+            loadAndSendJson();
+        });
     </script>
-  </body>
+</body>
 </html>
